@@ -28,6 +28,9 @@ export default function CapellaInspiredHero({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number | undefined>(undefined);
   const [isMounted, setIsMounted] = useState(false);
+  const [showContactModal, setShowContactModal] = useState(false);
+  const [showSubscribeModal, setShowSubscribeModal] = useState(false);
+  const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
 
   useEffect(() => {
     setIsMounted(true);
@@ -602,7 +605,7 @@ export default function CapellaInspiredHero({
       ctx.fill();
 
       // Draw central stacked cube structure with floating animation
-      const baseX = rect.width / 2;
+      const baseX = rect.width / 2 + (rect.width * 0.1); // Shift 10% to the right
       const baseY = rect.height / 2;
       
       // Add floating motion to the right and back
@@ -611,12 +614,12 @@ export default function CapellaInspiredHero({
       const centerY = baseY;
       const stackRotation = time * 0.005;
       
-      // Draw multiple stacked cubes with different sizes and rotations - much larger sizes
+      // Draw multiple stacked cubes with different sizes and rotations - 20% larger sizes
       const cubes = [
-        { size: 90, yOffset: -135, rotation: stackRotation, opacity: 0.9 },
-        { size: 140, yOffset: -45, rotation: stackRotation * 0.7, opacity: 0.8 },
-        { size: 200, yOffset: 45, rotation: stackRotation * 0.5, opacity: 0.7 },
-        { size: 110, yOffset: 135, rotation: stackRotation * 0.3, opacity: 0.6 }
+        { size: 108, yOffset: -135, rotation: stackRotation, opacity: 0.9 }, // 90 * 1.2
+        { size: 168, yOffset: -45, rotation: stackRotation * 0.7, opacity: 0.8 }, // 140 * 1.2
+        { size: 240, yOffset: 45, rotation: stackRotation * 0.5, opacity: 0.7 }, // 200 * 1.2
+        { size: 132, yOffset: 135, rotation: stackRotation * 0.3, opacity: 0.6 } // 110 * 1.2
       ];
       
       cubes.forEach((cube, index) => {
@@ -860,39 +863,91 @@ export default function CapellaInspiredHero({
     <div className="relative w-full h-screen bg-black overflow-hidden">
       {/* Header */}
       <header className="relative z-20 flex justify-between items-center px-12 py-6">
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-2">
           <Image 
-            src="/logo.svg" 
-            alt="NoirStack Logo" 
-            width={32}
-            height={32}
-            className="h-8 w-auto filter brightness-0 invert"
+            src="/logo-blue.png" 
+            alt="Noir Stack Logo" 
+            width={48}
+            height={48}
+            className="h-12 w-auto opacity-80 hover:opacity-100 transition-opacity duration-300 mix-blend-screen"
           />
           <div className="text-2xl font-bold text-white font-[family-name:var(--font-montserrat)]">
             NOIR<span className="text-blue-400">STACK</span>
           </div>
         </div>
-        <nav className="hidden md:flex space-x-8 font-[family-name:var(--font-inter)]">
-          <a href="#" className="relative text-white/80 hover:text-blue-400 transition-all duration-300 group">
-            Platform
-            <span className="absolute bottom-[-4px] left-0 w-0 h-0.5 bg-blue-400 group-hover:w-full transition-all duration-500 shadow-[0_0_12px_rgba(59,130,246,0.6)]"></span>
-          </a>
-          <a href="#" className="relative text-white/80 hover:text-blue-400 transition-all duration-300 group">
-            Solutions
-            <span className="absolute bottom-[-4px] left-0 w-0 h-0.5 bg-blue-400 group-hover:w-full transition-all duration-500 shadow-[0_0_12px_rgba(59,130,246,0.6)]"></span>
-          </a>
-          <a href="#" className="relative text-white/80 hover:text-blue-400 transition-all duration-300 group">
-            Intelligence
-            <span className="absolute bottom-[-4px] left-0 w-0 h-0.5 bg-blue-400 group-hover:w-full transition-all duration-500 shadow-[0_0_12px_rgba(59,130,246,0.6)]"></span>
-          </a>
-          <a href="#" className="relative text-white/80 hover:text-blue-400 transition-all duration-300 group">
-            Analytics
-            <span className="absolute bottom-[-4px] left-0 w-0 h-0.5 bg-blue-400 group-hover:w-full transition-all duration-500 shadow-[0_0_12px_rgba(59,130,246,0.6)]"></span>
-          </a>
-          <a href="#" className="relative text-white/80 hover:text-blue-400 transition-all duration-300 group">
+        <nav className="hidden md:flex items-center space-x-8 font-[family-name:var(--font-inter)]">
+          <div 
+            className="relative"
+            onMouseEnter={() => setActiveTooltip('lab')}
+            onMouseLeave={() => setActiveTooltip(null)}
+          >
+            <a href="#" className="relative text-white/80 hover:text-blue-400 transition-all duration-300 group">
+              Lab
+              <span className="absolute bottom-[-4px] left-0 w-0 h-0.5 bg-blue-400 group-hover:w-full transition-all duration-500 shadow-[0_0_12px_rgba(59,130,246,0.6)]"></span>
+            </a>
+            {activeTooltip === 'lab' && (
+              <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 bg-black/90 backdrop-blur-sm border border-blue-400/30 rounded-lg p-4 w-80 z-50">
+                <p className="text-sm text-white/90 leading-relaxed">
+                  Discover prototypes and experimental projects focused on pushing the boundaries of innovation and future advancements.
+                </p>
+                <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black/90 border-l border-t border-blue-400/30 rotate-45"></div>
+              </div>
+            )}
+          </div>
+          
+          <div 
+            className="relative"
+            onMouseEnter={() => setActiveTooltip('solutions')}
+            onMouseLeave={() => setActiveTooltip(null)}
+          >
+            <a href="/solutions" className="relative text-white/80 hover:text-blue-400 transition-all duration-300 group">
+              Solutions
+              <span className="absolute bottom-[-4px] left-0 w-0 h-0.5 bg-blue-400 group-hover:w-full transition-all duration-500 shadow-[0_0_12px_rgba(59,130,246,0.6)]"></span>
+            </a>
+            {activeTooltip === 'solutions' && (
+              <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 bg-black/90 backdrop-blur-sm border border-blue-400/30 rounded-lg p-4 w-80 z-50">
+                <p className="text-sm text-white/90 leading-relaxed">
+                  Explore a range of tailored services designed to solve complex challenges through innovative technology and customized solutions.
+                </p>
+                <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black/90 border-l border-t border-blue-400/30 rotate-45"></div>
+              </div>
+            )}
+          </div>
+          
+          <div 
+            className="relative"
+            onMouseEnter={() => setActiveTooltip('hub')}
+            onMouseLeave={() => setActiveTooltip(null)}
+          >
+            <a href="/hub" className="relative text-white/80 hover:text-blue-400 transition-all duration-300 group">
+              Hub
+              <span className="absolute bottom-[-4px] left-0 w-0 h-0.5 bg-blue-400 group-hover:w-full transition-all duration-500 shadow-[0_0_12px_rgba(59,130,246,0.6)]"></span>
+            </a>
+            {activeTooltip === 'hub' && (
+              <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 bg-black/90 backdrop-blur-sm border border-blue-400/30 rounded-lg p-4 w-80 z-50">
+                <p className="text-sm text-white/90 leading-relaxed">
+                  Explore a centralized space for resources, documentation, and community tools, designed for collaboration and continuous engagement.
+                </p>
+                <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black/90 border-l border-t border-blue-400/30 rotate-45"></div>
+              </div>
+            )}
+          </div>
+          
+          <button 
+            onClick={() => setShowContactModal(true)}
+            className="relative text-white/80 hover:text-blue-400 transition-all duration-300 group"
+          >
             Contact
             <span className="absolute bottom-[-4px] left-0 w-0 h-0.5 bg-blue-400 group-hover:w-full transition-all duration-500 shadow-[0_0_12px_rgba(59,130,246,0.6)]"></span>
-          </a>
+          </button>
+          
+          <button 
+            onClick={() => setShowSubscribeModal(true)}
+            className="relative text-white/80 hover:text-blue-400 transition-all duration-300 group"
+          >
+            Subscribe
+            <span className="absolute bottom-[-4px] left-0 w-0 h-0.5 bg-blue-400 group-hover:w-full transition-all duration-500 shadow-[0_0_12px_rgba(59,130,246,0.6)]"></span>
+          </button>
         </nav>
       </header>
 
@@ -927,9 +982,9 @@ export default function CapellaInspiredHero({
           transition={{ duration: 1, delay: 0.2 }}
           className="mb-8"
         >
-          <h1 className="text-6xl md:text-8xl font-light text-white mb-4 tracking-tight font-[family-name:var(--font-montserrat)]">
-            Building Tomorrow's
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">
+          <h1 className="text-6xl md:text-8xl font-light text-white mb-4 tracking-tight font-[family-name:var(--font-montserrat)] leading-tight">
+            Creating
+            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300 pb-2">
               Intelligence
             </span>
           </h1>
@@ -943,12 +998,11 @@ export default function CapellaInspiredHero({
           className="mb-12"
         >
           <h2 className="text-2xl md:text-3xl font-light text-white/90 mb-6 font-[family-name:var(--font-montserrat)]">
-            Seeing Beyond the Visible
+            Optical Precision, Infinite Horizons
           </h2>
           <p className="text-lg text-white/70 max-w-3xl leading-relaxed font-[family-name:var(--font-inter)]">
-            Advanced satellite constellation delivering real-time intelligence through cutting-edge orbital technology. 
-            Our sophisticated analytics platform offers unparalleled monitoring capabilities and flexible data 
-            collection, ensuring you get the insights you need when it matters most.
+            Harnessing emerging technologies to break down complex challenges through intuitive solutions, 
+            predictive insights, and scalable applications designed for unique visions.
           </p>
         </motion.div>
 
@@ -962,18 +1016,380 @@ export default function CapellaInspiredHero({
           <button className="group relative px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/50 font-[family-name:var(--font-inter)] overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-400/0 via-blue-400/20 to-blue-400/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
             <div className="absolute inset-0 rounded-lg border border-blue-400/30 group-hover:border-blue-300/60 transition-colors duration-300"></div>
-            <span className="relative z-10">Explore Platform</span>
+            <span className="relative z-10">Behind the Code</span>
           </button>
           <button className="group relative px-8 py-4 border border-blue-400 text-blue-400 hover:bg-blue-400/10 hover:text-blue-300 rounded-lg font-medium transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-blue-400/30 font-[family-name:var(--font-inter)] overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-400/0 via-blue-400/10 to-blue-400/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
             <div className="absolute inset-0 rounded-lg border border-blue-400/50 group-hover:border-blue-300/80 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.5)] transition-all duration-300"></div>
-            <span className="relative z-10">View Intelligence</span>
+            <span className="relative z-10">Intelligence in Action</span>
           </button>
         </motion.div>
       </div>
 
+      {/* Contact Modal */}
+      {showContactModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            className="bg-black/90 border border-blue-400/30 rounded-xl p-8 max-w-md w-full"
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-semibold text-white font-[family-name:var(--font-montserrat)]">Schedule a Consultation</h3>
+              <button 
+                onClick={() => setShowContactModal(false)}
+                className="text-white/60 hover:text-white transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <p className="text-white/70 mb-6 leading-relaxed">
+              Interested in personalized insights or a demo? Share your email, and we&apos;ll reach out to you.
+            </p>
+            
+            <form className="space-y-4">
+              <div>
+                <input 
+                  type="text" 
+                  placeholder="Name (optional)"
+                  className="w-full px-4 py-3 bg-black/50 border border-blue-400/30 rounded-lg text-white placeholder-white/50 focus:border-blue-400 focus:outline-none transition-colors"
+                />
+              </div>
+              <div>
+                <input 
+                  type="email" 
+                  placeholder="Email *"
+                  required
+                  className="w-full px-4 py-3 bg-black/50 border border-blue-400/30 rounded-lg text-white placeholder-white/50 focus:border-blue-400 focus:outline-none transition-colors"
+                />
+              </div>
+              <div>
+                <textarea 
+                  placeholder="Message"
+                  rows={4}
+                  className="w-full px-4 py-3 bg-black/50 border border-blue-400/30 rounded-lg text-white placeholder-white/50 focus:border-blue-400 focus:outline-none transition-colors resize-none"
+                ></textarea>
+              </div>
+              <button 
+                type="submit"
+                className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25"
+              >
+                Send Consultation Request
+              </button>
+            </form>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Subscribe Modal */}
+      {showSubscribeModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            className="bg-black/90 border border-blue-400/30 rounded-xl p-8 max-w-md w-full"
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-semibold text-white font-[family-name:var(--font-montserrat)]">Stay Informed</h3>
+              <button 
+                onClick={() => setShowSubscribeModal(false)}
+                className="text-white/60 hover:text-white transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <p className="text-white/70 mb-6 leading-relaxed">
+              Sign up to receive the latest content, product innovations, and exclusive updates on upcoming developments.
+            </p>
+            
+            <form className="space-y-4">
+              <div>
+                <input 
+                  type="email" 
+                  placeholder="Your email address"
+                  required
+                  className="w-full px-4 py-3 bg-black/50 border border-blue-400/30 rounded-lg text-white placeholder-white/50 focus:border-blue-400 focus:outline-none transition-colors"
+                />
+              </div>
+              <button 
+                type="submit"
+                className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25"
+              >
+                Subscribe to Newsletter
+              </button>
+            </form>
+            
+            <p className="text-white/50 text-sm mt-4 text-center">
+              You&apos;ll receive a welcome email after subscribing.
+            </p>
+          </motion.div>
+        </div>
+      )}
+
       {/* Professional studio overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/5 to-black/20 pointer-events-none" />
+
+      {/* Contact Modal */}
+      {showContactModal && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            className="bg-black/90 backdrop-blur-md border border-blue-400/30 rounded-xl p-8 w-full max-w-lg relative"
+          >
+            <button
+              onClick={() => setShowContactModal(false)}
+              className="absolute top-4 right-4 text-white/60 hover:text-white transition-colors"
+            >
+              ✕
+            </button>
+            
+            <h3 className="text-2xl font-bold text-white mb-2 font-[family-name:var(--font-montserrat)]">
+              Schedule a Consultation
+            </h3>
+            <p className="text-white/70 mb-6 font-[family-name:var(--font-inter)]">
+              Interested in personalized insights, a demo, or discussing a project? Share your email and preferred time for a follow up.
+            </p>
+            
+            <form className="space-y-4">
+              <div>
+                <label className="block text-white/80 text-sm mb-2 font-[family-name:var(--font-inter)]">
+                  Name (Optional)
+                </label>
+                <input
+                  type="text"
+                  className="w-full bg-black/50 border border-blue-400/30 rounded-lg px-4 py-3 text-white placeholder-white/40 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400/20 transition-all"
+                  placeholder="Your name"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-white/80 text-sm mb-2 font-[family-name:var(--font-inter)]">
+                  Email <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="email"
+                  required
+                  className="w-full bg-black/50 border border-blue-400/30 rounded-lg px-4 py-3 text-white placeholder-white/40 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400/20 transition-all"
+                  placeholder="your@email.com"
+                />
+              </div>
+
+              <div>
+                <label className="block text-white/80 text-sm mb-2 font-[family-name:var(--font-inter)]">
+                  Preferred Time & Date (Optional)
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  <input
+                    type="date"
+                    className="bg-black/50 border border-blue-400/30 rounded-lg px-4 py-3 text-white focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400/20 transition-all"
+                  />
+                  <input
+                    type="time"
+                    className="bg-black/50 border border-blue-400/30 rounded-lg px-4 py-3 text-white focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400/20 transition-all"
+                  />
+                </div>
+                <p className="text-white/50 text-xs mt-1">Or you can mention your availability in the message below</p>
+              </div>
+              
+              <div>
+                <label className="block text-white/80 text-sm mb-2 font-[family-name:var(--font-inter)]">
+                  Message (Optional)
+                </label>
+                <textarea
+                  rows={3}
+                  className="w-full bg-black/50 border border-blue-400/30 rounded-lg px-4 py-3 text-white placeholder-white/40 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400/20 transition-all resize-none"
+                  placeholder="Any details, questions, or preferred time ranges..."
+                ></textarea>
+              </div>
+
+              <div>
+                <label className="block text-white/80 text-sm mb-2 font-[family-name:var(--font-inter)]">
+                  Project Requirements (Optional)
+                </label>
+                <textarea
+                  rows={4}
+                  className="w-full bg-black/50 border border-blue-400/30 rounded-lg px-4 py-3 text-white placeholder-white/40 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400/20 transition-all resize-none"
+                  placeholder="Let us know if you have any specific requirements or ideas for the project you want to discuss..."
+                ></textarea>
+              </div>
+              
+              <button
+                type="submit"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25 font-[family-name:var(--font-inter)]"
+              >
+                Schedule Consultation
+              </button>
+            </form>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Subscribe Modal */}
+      {showSubscribeModal && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            className="bg-black/90 backdrop-blur-md border border-blue-400/30 rounded-xl p-8 w-full max-w-md relative"
+          >
+            <button
+              onClick={() => setShowSubscribeModal(false)}
+              className="absolute top-4 right-4 text-white/60 hover:text-white transition-colors"
+            >
+              ✕
+            </button>
+            
+            <h3 className="text-2xl font-bold text-white mb-2 font-[family-name:var(--font-montserrat)]">
+              Stay Informed
+            </h3>
+            <p className="text-white/70 mb-6 font-[family-name:var(--font-inter)]">
+              Sign up to receive the latest content, product innovations, and exclusive updates on upcoming developments.
+            </p>
+            
+            <form className="space-y-4">
+              <div>
+                <label className="block text-white/80 text-sm mb-2 font-[family-name:var(--font-inter)]">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  required
+                  className="w-full bg-black/50 border border-blue-400/30 rounded-lg px-4 py-3 text-white placeholder-white/40 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400/20 transition-all"
+                  placeholder="your@email.com"
+                />
+              </div>
+              
+              <button
+                type="submit"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25 font-[family-name:var(--font-inter)]"
+              >
+                Subscribe to Updates
+              </button>
+              
+              <p className="text-white/50 text-xs text-center">
+                You&apos;ll receive a welcome email and can unsubscribe at any time.
+              </p>
+            </form>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Footer */}
+      <footer className="relative z-10 bg-gradient-to-t from-black via-gray-900/80 to-transparent border-t border-white/10 mt-24">
+        <div className="max-w-7xl mx-auto px-6 py-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Brand Section */}
+            <div className="lg:col-span-1">
+              <div className="flex items-center space-x-2 mb-6">
+                <Image 
+                  src="/logo.png" 
+                  alt="NoirStack Logo" 
+                  width={32}
+                  height={32}
+                  className="h-8 w-auto opacity-80 mix-blend-screen"
+                />
+                <div className="text-xl font-bold text-white">
+                  NOIR<span className="text-blue-400">STACK</span>
+                </div>
+              </div>
+              <p className="text-white/70 mb-6 text-sm leading-relaxed" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
+                Advanced satellite constellation delivering real-time intelligence through cutting-edge orbital technology and innovative solutions.
+              </p>
+              
+              {/* Social Media Links */}
+              <div className="flex space-x-4">
+                <a href="#" className="w-10 h-10 bg-white/10 hover:bg-blue-500/20 rounded-lg flex items-center justify-center transition-all duration-300 group">
+                  <svg className="w-5 h-5 text-white/70 group-hover:text-blue-400" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                  </svg>
+                </a>
+                <a href="#" className="w-10 h-10 bg-white/10 hover:bg-blue-500/20 rounded-lg flex items-center justify-center transition-all duration-300 group">
+                  <svg className="w-5 h-5 text-white/70 group-hover:text-blue-400" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                  </svg>
+                </a>
+                <a href="#" className="w-10 h-10 bg-white/10 hover:bg-blue-500/20 rounded-lg flex items-center justify-center transition-all duration-300 group">
+                  <svg className="w-5 h-5 text-white/70 group-hover:text-blue-400" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.404-5.965 1.404-5.965s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.739.1.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.130-2.607 7.464-6.227 7.464-1.216 0-2.357-.629-2.749-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24c6.624 0 11.99-5.367 11.99-11.987C24.007 5.367 18.641.001.012.001z."/>
+                  </svg>
+                </a>
+                <a href="#" className="w-10 h-10 bg-white/10 hover:bg-blue-500/20 rounded-lg flex items-center justify-center transition-all duration-300 group">
+                  <svg className="w-5 h-5 text-white/70 group-hover:text-blue-400" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12.244 0C5.503.016.016 5.503 0 12.244.016 18.985 5.503 24.472 12.244 24.456S24.472 18.985 24.456 12.244C24.472 5.503 18.985.016 12.244 0zM9.836 19.22c-.976 0-1.767-.79-1.767-1.767s.79-1.767 1.767-1.767 1.767.79 1.767 1.767-.79 1.767-1.767 1.767zm8.73-3.458h-2.35c0-.992-.02-1.964-.058-2.887h2.252c.105.952.156 1.919.156 2.887zm-4.395 0h-2.535c-.173-.408-.356-.842-.544-1.299-.188-.458-.379-.936-.57-1.434h3.649v2.733zm0-4.094h-3.898c-.237-.817-.478-1.698-.717-2.64h4.615v2.64zm0-4.001h-4.757c-.188-.974-.372-2.008-.548-3.092h5.305v3.092zm2.045 8.095c.176-.408.349-.842.516-1.299.168-.458.334-.936.497-1.434h2.502c-.105.952-.156 1.919-.156 2.887h-3.359z"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            {/* Quick Links */}
+            <div>
+              <h4 className="text-white font-semibold mb-4 tracking-wide" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
+                Quick Links
+              </h4>
+              <ul className="space-y-3">
+                <li><a href="/solutions" className="text-white/70 hover:text-blue-400 transition-colors text-sm" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>Solutions</a></li>
+                <li><a href="#" className="text-white/70 hover:text-blue-400 transition-colors text-sm" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>Lab</a></li>
+                <li><a href="#" className="text-white/70 hover:text-blue-400 transition-colors text-sm" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>Hub</a></li>
+                <li><a href="#" className="text-white/70 hover:text-blue-400 transition-colors text-sm" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>Contact</a></li>
+                <li><button onClick={() => setShowSubscribeModal(true)} className="text-white/70 hover:text-blue-400 transition-colors text-sm text-left" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>Subscribe</button></li>
+              </ul>
+            </div>
+
+            {/* Services */}
+            <div>
+              <h4 className="text-white font-semibold mb-4 tracking-wide" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
+                Services
+              </h4>
+              <ul className="space-y-3">
+                <li><a href="/solutions#ai" className="text-white/70 hover:text-blue-400 transition-colors text-sm" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>AI & Machine Learning</a></li>
+                <li><a href="/solutions#quantum" className="text-white/70 hover:text-blue-400 transition-colors text-sm" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>Quantum Computing</a></li>
+                <li><a href="/solutions#development" className="text-white/70 hover:text-blue-400 transition-colors text-sm" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>Custom Development</a></li>
+                <li><a href="/solutions#analytics" className="text-white/70 hover:text-blue-400 transition-colors text-sm" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>Data Analytics</a></li>
+                <li><a href="#" className="text-white/70 hover:text-blue-400 transition-colors text-sm" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>Consulting</a></li>
+              </ul>
+            </div>
+
+            {/* Contact & Legal */}
+            <div>
+              <h4 className="text-white font-semibold mb-4 tracking-wide" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
+                Contact & Legal
+              </h4>
+              <ul className="space-y-3 mb-6">
+                <li><button onClick={() => setShowContactModal(true)} className="text-white/70 hover:text-blue-400 transition-colors text-sm text-left" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>Contact Us</button></li>
+                <li><a href="mailto:info@noirstack.com" className="text-white/70 hover:text-blue-400 transition-colors text-sm" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>info@noirstack.com</a></li>
+              </ul>
+              
+              <h5 className="text-white/80 font-medium mb-3 text-sm tracking-wide" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
+                Legal
+              </h5>
+              <ul className="space-y-2">
+                <li><a href="#" className="text-white/60 hover:text-blue-400 transition-colors text-xs" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>Privacy Policy</a></li>
+                <li><a href="#" className="text-white/60 hover:text-blue-400 transition-colors text-xs" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>Terms of Service</a></li>
+                <li><a href="#" className="text-white/60 hover:text-blue-400 transition-colors text-xs" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>Cookie Policy</a></li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Bottom Bar */}
+          <div className="border-t border-white/10 pt-8 mt-12 flex flex-col md:flex-row justify-between items-center">
+            <p className="text-white/50 text-sm mb-4 md:mb-0" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
+              Copyright © 2024 NoirStack. All rights reserved.
+            </p>
+            <div className="flex space-x-6">
+              <a href="#" className="text-white/50 hover:text-blue-400 transition-colors text-xs" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>Accessibility</a>
+              <a href="#" className="text-white/50 hover:text-blue-400 transition-colors text-xs" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>Sitemap</a>
+              <a href="#" className="text-white/50 hover:text-blue-400 transition-colors text-xs" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>Support</a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
