@@ -1,0 +1,16 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "typescript.preferences.importModuleSpecifier": "relative"
+    },
+    "extensions": {
+        "recommendations": [
+            "bradlc.vscode-tailwindcss",
+            "ms-vscode.vscode-typescript-next"
+        ]
+    }
+}
