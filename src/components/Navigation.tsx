@@ -122,7 +122,7 @@ const Navigation = () => {
             </div>
             
             <p className="text-white/70 mb-6 leading-relaxed">
-              Interested in personalized insights or a demo? Share your email, and we'll reach out to you.
+              Interested in personalized insights or a demo? Share your email, and we&apos;ll reach out to you.
             </p>
             
             <form className="space-y-4">
@@ -209,7 +209,7 @@ const Navigation = () => {
             </form>
             
             <p className="text-white/50 text-sm mt-4 text-center">
-              You'll receive a welcome email after subscribing.
+              You&apos;ll receive a welcome email after subscribing.
             </p>
           </motion.div>
         </div>
